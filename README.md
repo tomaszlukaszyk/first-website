@@ -1,2 +1,2 @@
 # My first webiste
-Build using HTML, CSS and JS.
+Built using HTML, CSS and JS.
