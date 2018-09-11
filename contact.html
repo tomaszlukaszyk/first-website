@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html class="backgroundimg" lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <title>Contact page</title>
+    </head>
+    <body>
+        <div class="container">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a class="active" href="contact.html">Contact</a></li>
+        </ul>
+        <main>
+            <form name="contactForm" class="card" onsubmit="return validateForm()" novalidate>
+                <h3>Contact form</h3>
+                <a>If you want to sand me a message pleas use the form.</a>
+                <br><br>
+                Full name:<br>
+                <input type="text" name="fullname" placeholder="Enter your name"><br>
+                <div id="nameErr" class="err"></div><br>
+                Email adress:<br>
+                <input type="email" name="email" placeholder="Give your email"><br>
+                <div id="mailErr" class="err"></div><br>
+                Message:<br>
+                <textarea name="message" placeholder="Enter your message"></textarea><br>
+                <div id="messageErr" class="err"></div><br>
+                <input type="submit" value="SEND">
+            </form> 
+        </main>
+        <footer>
+            &copy;2018 Tomasz Łukaszyk
+        </footer>
+        </div>
+
+        <script src="scripts/script.js"></script>
+    </body>
+</html>
