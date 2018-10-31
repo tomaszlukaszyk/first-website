@@ -1,54 +1,85 @@
-function validateFullName() {
-    var name = document.forms["contactForm"]["fullname"].value;
-    var err = document.getElementById("nameErr");
-    if (name == "") {
-        err.innerHTML = "Name must be filled out";
-        return false;
-    } else if (!/^[A-Z][a-z]+[ ][A-Z][a-z]+$/.test(name)) {
-        err.innerHTML = "Please enter name in valid form like 'John Doe'";
-        return false;
-    } else {
-        err.innerHTML = "";
+"use strict";
+
+const VALIDATE_PATTERNS = { fullName : /^[A-Z][a-z]+[ ][A-Z][a-z]+$/,
+    email : /^[A-Z0-9._]+@[A-Z0-9]+\.[A-Z]{2,}$/i, 
+    message : /[\w\d]+\s*/};
+
+const ERROR_MESSAGES = {fullName : "Please enter name in valid form like 'John Doe'",
+    email : "Please enter valid email adress",
+    message : "Message must be filled out"};
+
+const ERROR_LOCATIONS = {fullName: "nameErr", email: "mailErr", message: "messageErr"};
+
+let contactForm = document.forms.contactForm;
+let fullName = contactForm.fullName;
+let email = contactForm.email;
+let message = contactForm.message;
+
+contactForm.addEventListener("submit", submitHandler);
+
+fullName.addEventListener("blur", blurHandler);
+fullName.addEventListener("focus", focusHandler);
+
+email.addEventListener("blur", blurHandler);
+email.addEventListener("focus", focusHandler);
+
+message.addEventListener("blur", blurHandler);
+message.addEventListener("focus", focusHandler);
+
+function submitHandler(event) {
+    event.preventDefault();
+
+    let inputs = event.target.elements;
+    dispatchBlurEventsForAllFormFields(inputs);
+
+    if (allInputsValid(inputs)) {
+        contactForm.reset();
+        alert("Message has been sent!");
     }
-    return true;
 }
 
-function validateEmail() {
-    var email = document.forms["contactForm"]["email"].value;
-    var err = document.getElementById("mailErr");
-    if (email == "") {
-        err.innerHTML = "Email must be filled out";
-        return false;
-    } else if (!/^[A-Z0-9._]+@[A-Z0-9]+\.[A-Z]{2,}$/i.test(email)) {
-        err.innerHTML = "Please enter valid email adress";
-        return false;
-    } else {
-        err.innerHTML = "";
+function blurHandler(event) {
+    let target = event.target;
+
+    if (!isInputValid(target)) {
+        let locationId = ERROR_LOCATIONS[target.name];
+        let errorMessage = ERROR_MESSAGES[target.name];
+        displayErrorMessage(locationId, errorMessage);
     }
-    return true;
 }
 
-function validateMessage() {
-    var message = document.forms["contactForm"]["message"].value;
-    var err = document.getElementById("messageErr");
-    if (message == "") {
-        err.innerHTML = "Message must be filled out";
-        return false;
-    } else {
-        err.innerHTML = "";
-    }
-    return true;
+function focusHandler(event) {
+    let locationId = ERROR_LOCATIONS[event.target.name];
+    displayErrorMessage(locationId, "");
 }
 
-function validateForm() {
-    if (!validateFullName()) {
-        return false;
+function isInputValid(target) {
+    return VALIDATE_PATTERNS[target.name].test(target.value);
+}
+
+function displayErrorMessage(locationId, errorMessage) {
+    let errorLocation = document.getElementById(locationId);
+    errorLocation.innerHTML = errorMessage;
+}
+
+function dispatchBlurEventsForAllFormFields(inputs) {
+    let newEvent = new Event("blur");
+
+    for (let i=0; i<inputs.length; i++) {
+        inputs[i].dispatchEvent(newEvent);
     }
-    if (!validateEmail()) {
-        return false;
+}
+
+function allInputsValid(inputs) {
+    for (let i=0; i<inputs.length; i++) {
+
+        if (inputs[i].name === "") {
+            continue;
+        }
+
+        if (!isInputValid(inputs[i])) {
+            return false;
+        }
     }
-    if (!validateMessage()) {
-        return false;
-    }
-    alert("Thank you for your message.")
+    return true;
 }
